@@ -9,7 +9,7 @@ from regions import (
 from pathlib import Path
 from astropy.wcs import WCS
 
-from mast_aladin.aida import AID
+from mast_aladin.aida import AIDA
 from mast_aladin.mixins import DelayUntilRendered
 
 import roman_datamodels.datamodels as rdd
@@ -23,7 +23,7 @@ __all__ = [
 _latest_instantiated_app = None
 
 
-class MastAladin(Aladin, DelayUntilRendered):
+class MastAladin(Aladin, DelayUntilRendered, AIDA):
     """
     An Aladin-lite widget with enhanced support for
     datasets from `MAST <https://mast.stsci.edu/>`_, built on
@@ -35,10 +35,6 @@ class MastAladin(Aladin, DelayUntilRendered):
         kwargs.setdefault('coo_frame', 'ICRSd')
 
         super().__init__(*args, **kwargs)
-
-        # the `aid` attribute gives access to methods from the
-        # Astro Image Display (AID) API
-        self.aid = AID(self)
 
         global _latest_instantiated_app
         _latest_instantiated_app = self
