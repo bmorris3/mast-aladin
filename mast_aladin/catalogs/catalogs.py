@@ -193,7 +193,7 @@ class PerformanceCatalog:
         """
         Show sources in the viewport "without optimization," meaning
         that all sources *in the viewport* are displayed. However, note that
-        this method more memory efficient than the standard `Aladin.add_table`
+        this method is more memory efficient than the standard `Aladin.add_table`
         because only the sources in the viewport are added to
         `~mast_aladin.app.MastAladin`.
 
