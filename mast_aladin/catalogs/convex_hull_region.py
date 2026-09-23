@@ -80,16 +80,4 @@ class ConvexHullRegion(PerformanceCatalog):
                 name=self.name,
                 **overlay_options
             )
-            self._n_sources_drawn = 0
-
-    @property
-    def n_sources_drawn(self):
-        """
-        Number of sources drawn as scatter marks in
-        `~mast_aladin.app.MastAladin`. Read only.
-
-        Returns
-        -------
-        int
-        """
-        return self._n_sources_drawn
+            self.n_sources_drawn = 0

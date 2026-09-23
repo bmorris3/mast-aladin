@@ -42,9 +42,7 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
     datasets from `MAST <https://mast.stsci.edu/>`_, built on
     top of `ipyaladin.widget.Aladin`.
     """
-    performance_catalogs = List(
-        Instance(PerformanceCatalog)
-    ).tag(sync=True, **widget_serialization)
+    performance_catalogs = []
 
     def __init__(self, *args, **kwargs):
         # set ICRSd as the default visible coordinate system
@@ -153,7 +151,7 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
 
         # add an already-constructed performance catalog
         if isinstance(table, PerformanceCatalog):
-            table.attach_to_mast_aladin(self)
+            table._attach_to_mast_aladin(self)
             self.performance_catalogs.append(table)
             return table.overlay_info
 
@@ -193,7 +191,7 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
                 shape=shape,
                 **catalog_options
             )
-            catalog_layer.attach_to_mast_aladin(self)
+            catalog_layer._attach_to_mast_aladin(self)
             self.performance_catalogs.append(catalog_layer)
             return catalog_layer.overlay_info
 

@@ -94,6 +94,10 @@ class PerformanceCatalog(ABC):
 
         self.name = name.strip()
 
+        for col, name in [[ra_column, 'RA'], [dec_column, 'Dec']]:
+            if col not in table.colnames:
+                raise ValueError(f"{name} column '{col}' not found in table.")
+
         ra = table[ra_column]
         dec = table[dec_column]
 
@@ -114,7 +118,7 @@ class PerformanceCatalog(ABC):
         # implement in subclasses
         raise NotImplementedError
 
-    def attach_to_mast_aladin(self, mast_aladin):
+    def _attach_to_mast_aladin(self, mast_aladin):
         """
         After `PerformanceCatalog` initialization, one must call
         `~mast_aladin.catalogs.PerformanceCatalog.attach_to_mast_aladin` to listen for updates
@@ -183,10 +187,6 @@ class PerformanceCatalog(ABC):
         self._remove_overlay()
 
         self.n_sources_drawn = np.count_nonzero(sources_in_viewport)
-
-        # prevent redrawing an existing catalog:
-        # if self.append_source_count_to_name(sources_in_viewport) in self.mast_aladin.overlays:
-        #     return
 
         self.overlay_info = self.mast_aladin.add_table(
             self.table[sources_in_viewport],
@@ -284,10 +284,21 @@ class PerformanceCatalog(ABC):
         n_sources = np.count_nonzero(sources_in_viewport)
 
         overlay_names = [
-            self._remove_source_count_from_name(name) for name in self.mast_aladin.overlays
+            self._remove_source_count_from_name(name)
+            for name in self.mast_aladin.overlays
         ]
         if self.name not in overlay_names and self.overlay_info:
-            # catalog was once shown, but has since been removed from aladin
+            # Catalog was once shown, but has since been removed from aladin.
+
+            # Remove the performance catalog from `MastAladin.performance_catalogs`:
+            for performance_catalog in self.mast_aladin.performance_catalogs:
+                if performance_catalog.name == self.name:
+                    self.mast_aladin.performance_catalogs.remove(
+                        performance_catalog
+                    )
+                    break
+
+            # exit here:
             return
 
         if n_sources < self.n_sources_max:
