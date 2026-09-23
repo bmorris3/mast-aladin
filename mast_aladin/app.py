@@ -155,6 +155,7 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
         if isinstance(table, PerformanceCatalog):
             table.attach_to_mast_aladin(self)
             self.performance_catalogs.append(table)
+            return table.overlay_info
 
         # call `Aladin.add_table` if (1) `performance_cls = None`, (2) the
         # table appears to be an observation query result table (contains an
@@ -194,6 +195,7 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
             )
             catalog_layer.attach_to_mast_aladin(self)
             self.performance_catalogs.append(catalog_layer)
+            return catalog_layer.overlay_info
 
     @observe('_target', '_rotation', '_fov_xy')
     @throttle(1)
