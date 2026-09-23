@@ -190,7 +190,7 @@ class PerformanceCatalog(ABC):
 
         self.overlay_info = self.mast_aladin.add_table(
             self.table[sources_in_viewport],
-            name=self._append_source_count_to_name(sources_in_viewport),
+            name=self._name_with_source_count(sources_in_viewport),
             performance_cls=None,  # prevents another performance catalog from being applied
             **self.catalog_options
         )
@@ -332,15 +332,15 @@ class PerformanceCatalog(ABC):
         """
         return re.sub(r'\s*\[\d+/\d+\]$', '', name)
 
-    def _append_source_count_to_name(self, sources_in_viewport):
+    def _name_with_source_count(self, sources_in_viewport):
         """
-        Append a source count suffix to a performance catalog name
-        in `~mast_aladin.app.MastAladin` when a subset of sources are shown.
+        Return the catalog name with a source count suffix when a subset
+        of sources are shown.
 
-        For example, if a catalog with name `Gaia` has been added and
+        For example, if a catalog with name ``Gaia`` has been added and
         1000 out of the 5000 total sources are in the viewport, this method
-        returns  `"Gaia [1000/5000]"`. If the viewport contains all sources,
-        no suffix is appended.
+        returns  ``"Gaia [1000/5000]"``. If the viewport contains all sources,
+        no source count is appended.
 
         Parameters
         ----------

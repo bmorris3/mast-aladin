@@ -113,7 +113,7 @@ class PriorityColumnSubset(PerformanceCatalog):
 
         self.overlay_info = self.mast_aladin.add_table(
             self.table[indices_in_viewport][top_priority_indices],
-            name=self._append_source_count_to_name(sources_in_viewport),
+            name=self._name_with_source_count(sources_in_viewport),
             performance_catalog=False,
             **self.catalog_options
         )
