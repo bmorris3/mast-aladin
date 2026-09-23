@@ -1,8 +1,7 @@
 import os
 from pathlib import Path
 
-from traitlets import List, observe, Instance
-from ipywidgets import widget_serialization
+from traitlets import observe
 
 from astropy.coordinates import SkyCoord
 from astropy.io import fits

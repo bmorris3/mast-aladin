@@ -51,33 +51,35 @@ class ConvexHullRegion(PerformanceCatalog):
         If not specified, the color of the region will be the same as the scatter
         marks.
         """
-        # add the convex hull *only* if the STC-S overlay isn't already displayed:
-        if self.overlay_info.get('type', '') != 'overlay_stcs':
+        # no-op if the convex hull region has been drawn already:
+        if self.overlay_info.get('type', '') == 'overlay_stcs':
+            return
 
-            # remove overlay if one is present:
-            self._remove_overlay()
+        # remove overlay if one is present (in this case, the overlay
+        # would be a scatter overlay)
+        self._remove_overlay()
 
-            # add the convex hull region overlay
-            overlay_options = dict(**self.catalog_options)
+        # add the convex hull region overlay
+        overlay_options = dict(**self.catalog_options)
 
-            # for available style options, see:
-            # https://cds-astro.github.io/aladin-lite/global.html#GraphicOverlayOptions
-            default_convex_hull_style = dict(
-                color=self.catalog_options.get('color'),
-                lineDash=[5, 10],
-                lineWidth=6,
-                fill=True,
-                fillColor=self.catalog_options.get('color'),
-                opacity=0.3,
-            )
+        # for available style options, see:
+        # https://cds-astro.github.io/aladin-lite/global.html#GraphicOverlayOptions
+        default_convex_hull_style = dict(
+            color=self.catalog_options.get('color'),
+            lineDash=[5, 10],
+            lineWidth=6,
+            fill=True,
+            fillColor=self.catalog_options.get('color'),
+            opacity=0.3,
+        )
 
-            for k, v in default_convex_hull_style.items():
-                overlay_options.setdefault(k, v)
+        for k, v in default_convex_hull_style.items():
+            overlay_options.setdefault(k, v)
 
-            self.overlay_info = self.mast_aladin.add_graphic_overlay_from_stcs(
-                self.convex_hull_stcs,
-                # omit the number of sources in the name a region graphic overlay:
-                name=self.name,
-                **overlay_options
-            )
-            self.n_sources_drawn = 0
+        self.overlay_info = self.mast_aladin.add_graphic_overlay_from_stcs(
+            self.convex_hull_stcs,
+            # omit the number of sources in the name a region graphic overlay:
+            name=self.name,
+            **overlay_options
+        )
+        self.n_sources_drawn = 0
