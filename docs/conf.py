@@ -160,6 +160,9 @@ html_theme_options.update(  # noqa: F405
     {
         "github_url": "https://github.com/spacetelescope/mast-aladin",
         "use_edit_page_button": True,
+        "logo": {
+            "text": "mast-aladin"
+        }
     }
 )
 
@@ -178,19 +181,19 @@ html_context = {
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-# html_title = None
+html_title = 'mast-aladin'
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
-# html_short_title = None
+html_short_title = 'mast-aladin'
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-# html_logo = 'logos/<mast-aladin.svg'
+html_logo = 'assets/stsci_symbol_pantone279.svg'
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-# html_favicon = 'logos/<mast-aladin>.ico'
+html_favicon = 'assets/stsci_symbol_pantone279.ico'
 
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
@@ -382,3 +385,5 @@ epub_exclude_files = ['search.html']
 
 # If false, no index is generated.
 # epub_use_index = True
+
+# automodsumm_inherited_members = True

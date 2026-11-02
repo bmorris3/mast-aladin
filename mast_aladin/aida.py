@@ -3,6 +3,8 @@ import astropy.units as u
 import warnings
 from enum import StrEnum
 
+__all__ = ['AIDA']
+
 
 class AIDA_aspects(StrEnum):
     CENTER = "center"
@@ -14,9 +16,7 @@ class AIDA_aspects(StrEnum):
 
 class AIDA:
     """
-    Provides a mixin API for mast-aladin to allow for parity with
-    jdaviz. This is to be used as a mixin within exisiting classes.
-    This is based on the Astro Image Display API (AIDA)[1]_.
+    Mixin class based on the Astro Image Display API (AIDA) [1]_.
 
     References
     ----------

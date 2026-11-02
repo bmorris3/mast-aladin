@@ -54,6 +54,9 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
     `MastAladin` extends `ipyaladin.widget.Aladin` with
     enhanced support for data products from MAST from `MAST <https://mast.stsci.edu/>`_.
     """
+
+    # list of `mast_aladin.catalogs.PerformanceCatalog` objects
+    # initialized within this instance of MastAladin
     performance_catalogs = []
 
     def __init__(self, *args, **kwargs):
@@ -465,18 +468,21 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
         Parameters
         ----------
         loc : str, optional (default "sidecar:split-right")
-            Location to display the MastAladin. Supported locations:
-                "inline": Displays the MastAladin inline in a notebook.
-                "sidecar": Displays the MastAladin in a separate JupyterLab window from the
-                    notebook, with location decided by 'anchor'. Anchor options available from
-                    ``jupyterlab-sidecar`` are:
-                        {'split-right', 'split-left', 'split-top', 'split-bottom', 'tab-before',
-                         'tab-after', 'right'}
-                    Example loc for a sidecar at the bottom is ``loc='sidecar:split-bottom'``.
-                "popout": Display the MastAladin in a detached display. By default, a new
-                    window will open (browser popup permissions required). Anchor options are:
-                        * ``popout:window`` (default, opens MastAladin in a new, detached popout)
-                        * ``popout:tab`` (opens MastAladin in a new, detached tab in your browser)
+
+            Location to display the MastAladin. Supported locations include:
+
+            * "inline": Displays the MastAladin inline in a notebook.
+            * "sidecar": Displays the MastAladin in a separate JupyterLab window from the
+              notebook, with location decided by 'anchor'. Anchor options available from
+              ``jupyterlab-sidecar`` are: {'split-right', 'split-left', 'split-top',
+              'split-bottom', 'tab-before', 'tab-after', 'right'}.
+
+              Example ``loc`` for a sidecar at the bottom is ``loc='sidecar:split-bottom'``.
+
+            * "popout": Display the MastAladin in a detached display. By default, a new
+              window will open (browser popup permissions required). Anchor options are:
+              * ``popout:window`` (default, opens MastAladin in a new, detached popout)
+              * ``popout:tab`` (opens MastAladin in a new, detached tab in your browser)
 
         title : str, optional (default "mast-aladin")
             The title of the sidecar tab, only applicable to a "sidecar" display.
