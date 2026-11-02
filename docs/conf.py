@@ -52,6 +52,7 @@ extensions = [
     'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
     'sphinx_automodapi.automodapi',
+    'sphinx_automodapi.smart_resolver',
     'sphinx.ext.mathjax',
     'sphinx_design'
 ]
