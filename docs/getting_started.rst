@@ -16,18 +16,9 @@ To browse Aladin in a Jupyter notebook,
     aladin.show()
 
 
-.. raw:: html
-
-   <div id="aladin-lite-div"></div>
-   <script type="text/javascript" src="https://aladin.cds.unistra.fr/AladinLite/api/v3/latest/aladin.js" charset="utf-8"></script>
-
-   <script type="text/javascript">
-   // Initialize Aladin Lite inside the div
-   var aladin = A.aladin('#aladin-lite-div', {
-   });
-   </script>
-
-
+.. image:: assets/getting_started_images/cell1.png
+    :width: 80%
+    :align: center
 
 
 
