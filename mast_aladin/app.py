@@ -3,7 +3,7 @@ import warnings
 from pathlib import Path
 from traitlets import observe
 
-
+import astropy.units as u
 from astropy.coordinates import SkyCoord
 from astropy.io import fits
 from astropy.wcs import WCS
@@ -591,6 +591,10 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
         is the separation from the viewport's center to its corner, calculated
         by ``~mast_aladin.app.MastAladin.viewport_to_cone_search_args``.
 
+        Missions MAST cone searches are limited to radii of <=30 arcmin. If the current
+        viewport limits produce a radius >30 arcmin, a warning is raised and the
+        query is completed with a radius of 30 arcmin.
+
         Extra keyword arguments are passed to ``MastMissions.query_region``.
 
         Users can also provide a pre-configured `~astroquery.mast.missions.MastMissionsClass`
@@ -670,8 +674,18 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
                 "arguments are set by `search_this_area` based on the current viewport. "
             )
 
+        search_coordinates = self.viewport_to_cone_search_args
+
+        if search_coordinates['radius'] > 30 * u.arcmin:
+            warnings.warn(
+                "Mission MAST cone searches are limited to 30 arcminutes in "
+                "radius, but the current viewport limits are larger. The MAST cone "
+                "search will be done with a radius of 30 arcmin."
+            )
+            search_coordinates['radius'] = 30 * u.arcmin
+
         query_result = mission_mast.query_region(
-            **self.viewport_to_cone_search_args,
+            **search_coordinates,
             **query_region_kwargs
         )
 
