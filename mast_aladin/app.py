@@ -467,27 +467,25 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
 
         Parameters
         ----------
-        loc : str, optional (default "sidecar:split-right")
+        loc : str, optional. Default "sidecar:split-right"
+            Location to display the MastAladin. Supported locations include:
 
-            Location to display the MastAladin. Supported locations are:
-
-            * "inline": Displays the MastAladin inline in a notebook.
-            * "sidecar": Displays the MastAladin in a separate JupyterLab window from the
+            - "inline": Displays the MastAladin inline in a notebook.
+            - "sidecar": Displays the MastAladin in a separate JupyterLab window from the
               notebook, with location decided by 'anchor'. Anchor options available from
               ``jupyterlab-sidecar`` are: {'split-right', 'split-left', 'split-top',
               'split-bottom', 'tab-before', 'tab-after', 'right'}.
-
               Example ``loc`` for a sidecar at the bottom is ``loc='sidecar:split-bottom'``.
 
-            * "popout": Display the MastAladin in a detached display. By default, a new
-              window will open (browser popup permissions required). Anchor options are:
-              * ``popout:window`` (default, opens MastAladin in a new, detached popout)
-              * ``popout:tab`` (opens MastAladin in a new, detached tab in your browser)
+            - "popout": Display the MastAladin in a detached display. By default, a new
+              window will open (browser popup permissions required). Anchor options are
+              ``popout:window`` (default, opens MastAladin in a new, detached popout) or
+              ``popout:tab`` (opens MastAladin in a new, detached tab in your browser).
 
-        title : str, optional (default "mast-aladin")
+        title : str, optional. Default "mast-aladin"
             The title of the sidecar tab, only applicable to a "sidecar" display.
 
-        ref: Sidecar | app, optional (default None)
+        ref: `sidecar.Sidecar <https://github.com/jupyter-widgets/jupyterlab-sidecar#sidecar>`_ or app, optional. Default None.
             An existing reference sidecar or app with `.sidecar` attribute. Opens the new sidecar
             display with its anchor defined relative to the ref sidecar. Only applicable to a
             "sidecar" display.
@@ -589,8 +587,9 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
             replace=False,
             **query_region_kwargs):
         """
-        Search Missions MAST for observations from ``mission`` within the
-        current viewport, and optionally add the footprints to the viewer.
+        Search `MissionsMAST <https://mast.stsci.edu/search/ui/#/>`_ for observations
+        from ``mission`` within the current viewport, and optionally add the
+        footprints to the viewer.
 
         Runs a cone search via ``MastMissions.query_region``. The cone center
         coordinate is the center of the viewport, and the cone radius
