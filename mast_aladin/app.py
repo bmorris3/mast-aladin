@@ -469,7 +469,7 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
         ----------
         loc : str, optional (default "sidecar:split-right")
 
-            Location to display the MastAladin. Supported locations include:
+            Location to display the MastAladin. Supported locations are:
 
             * "inline": Displays the MastAladin inline in a notebook.
             * "sidecar": Displays the MastAladin in a separate JupyterLab window from the
