@@ -120,7 +120,7 @@ use `astroquery.mast.missions.MastMissionsClass`. The code below reproduces the 
         limit=100
     )
 
-Note: Mission MAST supports cone searches with radii up to 30 arcmin. The mast-aladin 
+Note: MissionMAST supports cone searches with radii up to 30 arcmin. The mast-aladin 
 field of view in this example is significantly wider, so results are returned within 
 30 arcmin of the center of the field of view.
 
