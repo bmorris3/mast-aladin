@@ -15,7 +15,7 @@ To open `~mast_aladin.app.MastAladin` in a Jupyter notebook, run
         # Orion Nebula
         target='83.82 -5.3875',
         
-        # Request field of view ~3 degrees
+        # Set field of view to 3 degrees
         fov=3
 
     )
