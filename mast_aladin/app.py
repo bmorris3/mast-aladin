@@ -485,10 +485,15 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
         title : str, optional. Default "mast-aladin"
             The title of the sidecar tab, only applicable to a "sidecar" display.
 
-        ref: `sidecar.Sidecar <https://github.com/jupyter-widgets/jupyterlab-sidecar#sidecar>`_ or app, optional. Default None.
+        ref : sidecar.Sidecar [1]_ or app, optional. Default None.
             An existing reference sidecar or app with `.sidecar` attribute. Opens the new sidecar
             display with its anchor defined relative to the ref sidecar. Only applicable to a
             "sidecar" display.
+
+        References
+        ----------
+        .. [1] `JupyterLab Sidecar
+               <https://github.com/jupyter-widgets/jupyterlab-sidecar#sidecar>`_.
 
         """
         valid_anchors = [
