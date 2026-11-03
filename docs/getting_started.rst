@@ -30,7 +30,7 @@ To open `~mast_aladin.app.MastAladin` in a Jupyter notebook, run
 
 |
 
-`~mast_aladin.app.MastAladin.show` displays the widget in a 
+By default, `~mast_aladin.app.MastAladin.show` will display the widget in a 
 `Jupyter Lab sidecar <https://github.com/jupyter-widgets/jupyterlab-sidecar>`_
 to the right of the Jupyter notebook.
 
