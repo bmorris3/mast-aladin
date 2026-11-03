@@ -45,16 +45,68 @@ __all__ = [
 # store reference to the latest instantiation:
 _latest_instantiated_app = None
 
+# STScI's AWS S3 mirror of the DSS Color survey:
+stpubdata_DSS_url = "https://stpubdata.s3.us-east-1.amazonaws.com/mast/skybackgrounds/DSSColor"
+
 
 class MastAladin(Aladin, DelayUntilRendered, AIDA):
     """
-    An Aladin-lite widget with enhanced support for
-    datasets from `MAST <https://mast.stsci.edu/>`_, built on
-    top of `ipyaladin.widget.Aladin`.
+    `MastAladin` extends `ipyaladin.widget.Aladin` with
+    enhanced support for data products from MAST from `MAST <https://mast.stsci.edu/>`_.
     """
     performance_catalogs = []
 
     def __init__(self, *args, **kwargs):
+        """
+        Some of the arguments to the `ipyaladin.widget.Aladin` constructor
+        are listed below, see the `ipyaladin documentation for Aladin
+        <https://cds-astro.github.io/ipyaladin/user_documentation/user_documentation.html>`_
+        for the full set of available arguments.
+
+        Parameters
+        ----------
+        target : `str`, `~astropy.coordinates.SkyCoord`
+            The target of the Aladin Lite widget. The target can be provided as coordinates (either
+            `~astropy.coordinates.SkyCoord` or tuple of `~astropy.coordinates.Longitude` and
+            `~astropy.coordinates.Latitude`) or as a name (as a string).
+
+            The conversion from a name to coordinates does call different online services
+            depending on the base layer of the widget. For the sky, it uses CDS's
+            `Sesame <https://vizier.cds.unistra.fr/viz-bin/Sesame>`_  name resolver. This
+            looks first in SIMBAD, then in VizieR, and then in NED for the object's
+            coordinates.
+
+        fov : `int`, `float`, `~astropy.units.Quantity`
+            Sets the field of view of the viewer. If int or float, units are degrees.
+
+        survey : `str`
+            URL pointing to a HiPS survey sky background. Default is the
+            `Digitized Sky Survey <https://stdatu.stsci.edu/dss/getting_started.html>`,
+            served via AWS S3. The full URL is:
+            https://stpubdata.s3.us-east-1.amazonaws.com/mast/skybackgrounds/DSSColor
+
+        projection : `str`
+            Projection of the sky atlas in the display. Accepted values are:
+            {'TAN', 'STG', 'SIN', 'ZEA', 'MER', 'AIT', 'MOL'}
+
+        coo_frame : str
+            Astronomical coordinate frame for grid lines and the coordinate search box.
+            Accepted values are: {'ICRS', 'ICRSd', 'GAL'}
+
+        rotation : `int`, `float`, `~astropy.units.Quantity`
+            Rotate the field of view counter clockwise about its center. If int or float,
+            units are degrees.
+
+        height : `int`
+            The height of the widget in pixels.
+            Setting the height to -1 will expand the widget at 100% height of its
+            container. This is generally a bad idea in a notebook but can be usefull
+            for dashbord applications. The default height is 400 pixels.
+        """
+
+        # default survey is DSS served via AWS S3:
+        kwargs.setdefault('survey', stpubdata_DSS_url)
+
         # set ICRSd as the default visible coordinate system
         # in aladin-lite:
         kwargs.setdefault('coo_frame', 'ICRSd')
