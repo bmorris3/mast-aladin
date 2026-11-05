@@ -48,6 +48,8 @@ _latest_instantiated_app = None
 # STScI's AWS S3 mirror of the DSS Color survey:
 stpubdata_DSS_url = "https://stpubdata.s3.us-east-1.amazonaws.com/mast/skybackgrounds/DSSColor"
 
+mast_footprint_color = '#ed702d'
+
 
 class MastAladin(Aladin, DelayUntilRendered, AIDA):
     """
@@ -586,6 +588,7 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
             add_footprints=True,
             name="MAST Search",
             replace=False,
+            color=mast_footprint_color,
             **query_region_kwargs):
         """
         Search Missions MAST for observations from ``mission`` within the
@@ -624,6 +627,9 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
         replace : bool, default False
             If True and footprint overlays already exist with the name ``name``, replace
             the existing footprint overlay with the new query result.
+        color : str, default "#ed702d"
+            Hex string specifying the color of footprint overlays created by
+            this method.
         limit : int
             Default is 5000. The maximum number of dataset IDs in the results.
         offset : int
@@ -709,6 +715,7 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
                 ra_field=ra_field,
                 dec_field=dec_field,
                 only_footprints=True,
+                color=color
             )
 
             if 's_region' not in query_result.colnames:
