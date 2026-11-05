@@ -1,7 +1,7 @@
 mast-aladin
 ===========
 
-``mast-aladin`` is an Aladin-lite widget for Jupyter notebooks for use with 
+``mast-aladin`` is an Aladin Lite widget for Jupyter notebooks for use with 
 data products from the `Mikulski Archive for Space Telescopes (MAST) <https://mast.stsci.edu/>`_
 from the `Space Telescope Science Institute <https://stsci.edu/>`_. 
 
