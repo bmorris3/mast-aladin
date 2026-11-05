@@ -5,7 +5,7 @@ from traitlets import observe
 
 import astropy.units as u
 from astropy.coordinates import SkyCoord
-from astropy.io import fits
+from astropy.io import fits, votable
 from astropy.wcs import WCS
 from astroquery.mast import MastMissions
 
@@ -307,14 +307,21 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
             if not name:
                 name = "catalog"
 
-            return super().add_table(
-                table,
-                shape=shape,
-                name=name,
-                ra_field=ra_field,
-                dec_field=dec_field,
-                **table_options
-            )
+            with warnings.catch_warnings():
+                # Ignore votable unit warning raised by ipyaladin.Aladin.add_table
+                # for units that cannot be represented with vounits. The warning is
+                # raised when add_table attempts to write the table object to a
+                # votable bytes buffer:
+                warnings.simplefilter('ignore', votable.exceptions.W50)
+
+                return super().add_table(
+                    table,
+                    shape=shape,
+                    name=name,
+                    ra_field=ra_field,
+                    dec_field=dec_field,
+                    **table_options
+                )
 
         # construct a performance catalog
         else:
