@@ -41,7 +41,7 @@ footprints in red:
 .. code-block:: python
 
     observations, overlay = mast_aladin.search_this_area(
-        mission='jwst',  # search for JWST observations:
+        mission='jwst',  # search for JWST observations
         limit=100        # limit response to the first N results
     )
 
