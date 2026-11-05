@@ -521,6 +521,11 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
                         "attribute."
                     )
 
+            # When displaying mast-aladin in a sidecar, set the app height
+            # to `-1`, which is meant to make ipyaladin fill its container.
+            # Note: `height=-1` does not work as intended when the widget
+            # is shown inline.
+            self.height = -1
             sc = Sidecar(title=title, anchor=anchor, ref=ref)
             with sc:
                 display(self)
