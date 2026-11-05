@@ -5,7 +5,7 @@ mast-aladin
 data products from the `Mikulski Archive for Space Telescopes (MAST) <https://mast.stsci.edu/>`_
 from the `Space Telescope Science Institute <https://stsci.edu/>`_. 
 
-The source code is available on `GitHub <https://github.com/spacetelescope/mast-aladin>`.
+The source code is available on `GitHub <https://github.com/spacetelescope/mast-aladin>`_.
 
 
 Key Features
@@ -28,12 +28,13 @@ Why mast-aladin?
 
 |
 
-``mast-aladin`` is small Python package developed at the Space Telescope Science 
-Institute that extends `ipyaladin <https://github.com/cds-astro/ipyaladin>`_ by
-CDS (Centre de Données astronomiques de Strasbourg). `ipyaladin` is a Jupyter
-widget wrapper for `aladin-lite <https://github.com/cds-astro/aladin-lite>`_, also by CDS.
-``mast-aladin`` adds convenience methods for visualizing and interacting with
-MAST observation query results and MAST catalog query results. 
+``mast-aladin`` is Python package maintained by the Space Telescope Science 
+Institute extends `ipyaladin <https://github.com/cds-astro/ipyaladin>`_, a package
+maintained by CDS (Centre de Données astronomiques de Strasbourg). `ipyaladin` is
+a Jupyter widget wrapper for `aladin-lite <https://github.com/cds-astro/aladin-lite>`_,
+also maintained by CDS. ``mast-aladin`` adds convenience methods for visualizing
+and interacting with query results from MAST on the Aladin sky atlas, including 
+queries for observations and sources in catalogs.
 
 ``mast-aladin`` can run in any Jupyter notebook, including notebooks on the
 `Roman Research Nexus <https://roman.science.stsci.edu/hub/login?next=%2Fhub%2F>`_.

@@ -586,13 +586,13 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
     def search_this_area(
             self,
             mission=None,
-            mission_mast=None,
+            mission_search=None,
             add_footprints=True,
             name="MAST Search",
             replace=False,
             **query_region_kwargs):
         """
-        Search `MissionsMAST <https://mast.stsci.edu/search/ui/#/>`_ for observations
+        Query MAST `Mission Search <https://mast.stsci.edu/search/ui/#/>`_ for observations
         from ``mission`` within the current viewport, and optionally add the
         footprints to the viewer.
 
@@ -654,25 +654,25 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
         Returns
         -------
         query_result : `~astropy.table.Table`
-            Mission MAST query results via astroquery.
+            MAST Mission Search query results via astroquery.
 
         footprint_overlays : `~ipyaladin.overlays.overlay.Overlay` or None
             Overlay object for the footprint layer created by this method, if there
             is one.
         """
-        if mission is not None and mission_mast is None:
-            mission_mast = MastMissions(mission=mission)
+        if mission is not None and mission_search is None:
+            mission_search = MastMissions(mission=mission)
 
-        elif mission is None and mission_mast is not None:
-            mission = mission_mast.mission.lower()
+        elif mission is None and mission_search is not None:
+            mission = mission_search.mission.lower()
 
-        elif mission and mission_mast:
+        elif mission and mission_search:
             warnings.warn(
                 "`search_this_area` was called with values for both `mission` and "
                 "`mission_mast`. `mission_mast` takes precedent. `mission` will be "
                 "ignored."
             )
-            mission = mission_mast.mission.lower()
+            mission = mission_search.mission.lower()
 
         else:
             raise ValueError("One of the arguments `mission` or `mission_mast` must be given.")
@@ -694,7 +694,7 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
             )
             search_coordinates['radius'] = 30 * u.arcmin
 
-        query_result = mission_mast.query_region(
+        query_result = mission_search.query_region(
             **search_coordinates,
             **query_region_kwargs
         )

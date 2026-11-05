@@ -4,13 +4,17 @@ Getting started
 Launch mast-aladin
 ^^^^^^^^^^^^^^^^^^
 
-To open `~mast_aladin.app.MastAladin` in a Jupyter notebook, run
+To open `~mast_aladin.app.MastAladin` from a notebook in 
+`Jupyter Lab <https://jupyterlab.readthedocs.io/en/latest/>`_, run:
 
 .. code-block:: python
 
     from mast_aladin import MastAladin
 
-        target='83.82 -5.3875',   # Orion Nebula
+    mast_aladin = MastAladin(
+        target='83.82 -5.3875',  # Orion Nebula
+        fov=3                    # Set field of view to 3 degrees
+    )
 
     # open mast-aladin in a sidecar
     mast_aladin.show()
@@ -86,7 +90,7 @@ The MAST query result is saved to ``observations``, which is an astropy `~astrop
     Length = 100 rows
 
 Clicking on the edge of a footprint will reveal the observation query result
-information in Aladin:
+information in the mast-aladin widget:
 
 .. image:: assets/getting_started_images/cell1-click.jpg
     :width: 70%
@@ -98,25 +102,27 @@ information in Aladin:
 Using astroquery
 ^^^^^^^^^^^^^^^^
 
-For fully-configurable queries to MAST via astroquery,
-use `astroquery.mast.missions.MastMissionsClass`. The code below reproduces the query above:
+For fully-configurable MAST Mission Searches, use `astroquery.mast.missions.MastMissionsClass`,
+for details see the `astroquery.mast documentation 
+<https://docs.astropy.org/projects/astroquery/en/latest/mast/mast_missions.html>`_.
+The code below reproduces the query above:
 
 .. code-block:: python
 
     from astroquery.mast import MastMissions
 
-    mission_mast = MastMissions(mission='jwst')
-    observations = mission_mast.query_region(
+    mission_search = MastMissions(mission='jwst')
+    observations = mission_search.query_region(
         coordinates=mast_aladin.target,
         radius='30 arcmin',
         limit=100
     )
 
-Note: MissionMAST supports cone searches with radii up to 30 arcmin. The mast-aladin 
+Note: Mission Search supports cone searches with radii up to 30 arcmin. The mast-aladin 
 field of view in this example is significantly wider, so results are returned within 
 30 arcmin of the center of the field of view.
 
-To plot the observation footprints from the Mission MAST query, use
+To plot the observation footprints from Mission Search query results, use
 `~mast_aladin.app.MastAladin.add_table`:
 
 .. code-block:: python
