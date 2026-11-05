@@ -1,6 +1,6 @@
 
-Improve Aladin performance for large source catalogs
-====================================================
+High performance catalogs
+=========================
 
 The `~mast_aladin.app.MastAladin` method `~mast_aladin.app.MastAladin.add_table` 
 can be used to add a source catalog to an Aladin instance. 

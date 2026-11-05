@@ -56,6 +56,9 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
     `MastAladin` extends `ipyaladin.widget.Aladin` with
     enhanced support for data products from MAST from `MAST <https://mast.stsci.edu/>`_.
     """
+
+    # list of `mast_aladin.catalogs.PerformanceCatalog` objects
+    # initialized within this instance of MastAladin
     performance_catalogs = []
 
     def __init__(self, *args, **kwargs):
@@ -466,27 +469,33 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
 
         Parameters
         ----------
-        loc : str, optional (default "sidecar:split-right")
-            Location to display the MastAladin. Supported locations:
-                "inline": Displays the MastAladin inline in a notebook.
-                "sidecar": Displays the MastAladin in a separate JupyterLab window from the
-                    notebook, with location decided by 'anchor'. Anchor options available from
-                    ``jupyterlab-sidecar`` are:
-                        {'split-right', 'split-left', 'split-top', 'split-bottom', 'tab-before',
-                         'tab-after', 'right'}
-                    Example loc for a sidecar at the bottom is ``loc='sidecar:split-bottom'``.
-                "popout": Display the MastAladin in a detached display. By default, a new
-                    window will open (browser popup permissions required). Anchor options are:
-                        * ``popout:window`` (default, opens MastAladin in a new, detached popout)
-                        * ``popout:tab`` (opens MastAladin in a new, detached tab in your browser)
+        loc : str, optional. Default "sidecar:split-right"
+            Location to display the MastAladin. Supported locations include:
 
-        title : str, optional (default "mast-aladin")
+            - "inline": Displays the MastAladin inline in a notebook.
+            - "sidecar": Displays the MastAladin in a separate JupyterLab window from the
+              notebook, with location decided by 'anchor'. Anchor options available from
+              ``jupyterlab-sidecar`` are: {'split-right', 'split-left', 'split-top',
+              'split-bottom', 'tab-before', 'tab-after', 'right'}.
+              Example ``loc`` for a sidecar at the bottom is ``loc='sidecar:split-bottom'``.
+
+            - "popout": Display the MastAladin in a detached display. By default, a new
+              window will open (browser popup permissions required). Anchor options are
+              ``popout:window`` (default, opens MastAladin in a new, detached popout) or
+              ``popout:tab`` (opens MastAladin in a new, detached tab in your browser).
+
+        title : str, optional. Default "mast-aladin"
             The title of the sidecar tab, only applicable to a "sidecar" display.
 
-        ref: Sidecar | app, optional (default None)
+        ref : sidecar.Sidecar [1]_ or app, optional. Default None.
             An existing reference sidecar or app with `.sidecar` attribute. Opens the new sidecar
             display with its anchor defined relative to the ref sidecar. Only applicable to a
             "sidecar" display.
+
+        References
+        ----------
+        .. [1] `JupyterLab Sidecar
+               <https://github.com/jupyter-widgets/jupyterlab-sidecar#sidecar>`_.
 
         """
         valid_anchors = [
@@ -584,15 +593,16 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
     def search_this_area(
             self,
             mission=None,
-            mission_mast=None,
+            mission_search=None,
             add_footprints=True,
             name="MAST Search",
             replace=False,
             color=mast_footprint_color,
             **query_region_kwargs):
         """
-        Search Missions MAST for observations from ``mission`` within the
-        current viewport, and optionally add the footprints to the viewer.
+        Query MAST `Mission Search <https://mast.stsci.edu/search/ui/#/>`_ for observations
+        from ``mission`` within the current viewport, and optionally add the
+        footprints to the viewer.
 
         Runs a cone search via ``MastMissions.query_region``. The cone center
         coordinate is the center of the viewport, and the cone radius
@@ -655,25 +665,25 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
         Returns
         -------
         query_result : `~astropy.table.Table`
-            Mission MAST query results via astroquery.
+            MAST Mission Search query results via astroquery.
 
         footprint_overlays : `~ipyaladin.overlays.overlay.Overlay` or None
             Overlay object for the footprint layer created by this method, if there
             is one.
         """
-        if mission is not None and mission_mast is None:
-            mission_mast = MastMissions(mission=mission)
+        if mission is not None and mission_search is None:
+            mission_search = MastMissions(mission=mission)
 
-        elif mission is None and mission_mast is not None:
-            mission = mission_mast.mission.lower()
+        elif mission is None and mission_search is not None:
+            mission = mission_search.mission.lower()
 
-        elif mission and mission_mast:
+        elif mission and mission_search:
             warnings.warn(
                 "`search_this_area` was called with values for both `mission` and "
                 "`mission_mast`. `mission_mast` takes precedent. `mission` will be "
                 "ignored."
             )
-            mission = mission_mast.mission.lower()
+            mission = mission_search.mission.lower()
 
         else:
             raise ValueError("One of the arguments `mission` or `mission_mast` must be given.")
@@ -695,7 +705,7 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
             )
             search_coordinates['radius'] = 30 * u.arcmin
 
-        query_result = mission_mast.query_region(
+        query_result = mission_search.query_region(
             **search_coordinates,
             **query_region_kwargs
         )

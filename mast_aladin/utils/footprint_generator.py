@@ -8,6 +8,18 @@ from mast_aladin.utils.selectSIAF import (
     computeStcsFootprint,
 )
 
+__all__ = [
+    's_region',
+    'exp_list_to_table',
+    'Pointing',
+    'Exposure',
+    'Pattern',
+    'CustomPattern',
+    'DitherPattern',
+    'Observation',
+    'Program'
+]
+
 
 def s_region(apertures, att_matrix):
     """
