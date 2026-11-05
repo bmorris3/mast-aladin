@@ -29,7 +29,7 @@ Why mast-aladin?
 |
 
 ``mast-aladin`` is Python package maintained by the Space Telescope Science 
-Institute extends `ipyaladin <https://github.com/cds-astro/ipyaladin>`_, a package
+Institute that extends `ipyaladin <https://github.com/cds-astro/ipyaladin>`_, a package
 maintained by CDS (Centre de Données astronomiques de Strasbourg). `ipyaladin` is
 a Jupyter widget wrapper for `aladin-lite <https://github.com/cds-astro/aladin-lite>`_,
 also maintained by CDS. ``mast-aladin`` adds convenience methods for visualizing
