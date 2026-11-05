@@ -38,8 +38,8 @@ to the right of the Jupyter notebook.
 Search MAST for observations
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Now let's search for 100 JWST observations within the field of view using
-`~mast_aladin.app.MastAladin.search_this_area`, and plot the observation
+Now, let's search for 100 JWST observations within the field of view using
+`~mast_aladin.app.MastAladin.search_this_area` and plot the observation
 footprints in red: 
 
 .. code-block:: python
