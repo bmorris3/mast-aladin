@@ -10,15 +10,7 @@ To open `~mast_aladin.app.MastAladin` in a Jupyter notebook, run
 
     from mast_aladin import MastAladin
 
-    mast_aladin = MastAladin(
-
-        # Orion Nebula
-        target='83.82 -5.3875',
-        
-        # Set field of view to 3 degrees
-        fov=3
-
-    )
+        target='83.82 -5.3875',   # Orion Nebula
 
     # open mast-aladin in a sidecar
     mast_aladin.show()
