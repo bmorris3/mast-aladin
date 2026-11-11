@@ -2,7 +2,11 @@ from astropy.io import fits
 import pytest
 import numpy as np
 
+from mast_aladin.utils.optional_deps import import_jdaviz
+NO_JDAVIZ = import_jdaviz() is None
 
+
+@pytest.mark.skipif(NO_JDAVIZ, reason='test requires jdaviz, jdaviz not installed')
 class BaseImviz:
     @pytest.fixture(autouse=True)
     def setup_class(self, jdaviz_helper):
