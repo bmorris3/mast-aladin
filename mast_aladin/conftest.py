@@ -17,7 +17,8 @@ def MastAladin_app():
 @pytest.fixture
 def jdaviz_helper():
     jdaviz = import_jdaviz()
-    return jdaviz.gca()
+    if jdaviz is not None:
+        return jdaviz.gca()
 
 
 @pytest.fixture

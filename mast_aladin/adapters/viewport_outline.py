@@ -212,26 +212,29 @@ class ViewportOutline(HasTraits):
         """
         jdaviz = import_jdaviz()
 
-        current_jdaviz_app = jdaviz.gca()
+        if jdaviz is not None:
+            current_jdaviz_app = jdaviz.gca()
 
         mast_aladin = gca()
 
-        if jdaviz_viewer_name is None:
-            # Get first available image viewer
-            image_viewers = current_jdaviz_app._app.get_viewers_of_cls(
-                'ImvizImageView'
-            )
-            if image_viewers:
-                glue_viewer = image_viewers[0]
-                jdaviz_viewer = current_jdaviz_app.viewers[
-                    glue_viewer._ref_or_id
-                ]
-            else:
-                raise ValueError(
-                    "No image viewers available in jdaviz app. "
-                    "Load image data or create a viewer first."
+        if jdaviz is not None:
+            current_jdaviz_app = jdaviz.gca()
+            if jdaviz_viewer_name is None:
+                # Get first available image viewer
+                image_viewers = current_jdaviz_app._app.get_viewers_of_cls(
+                    'ImvizImageView'
                 )
-        else:
-            jdaviz_viewer = current_jdaviz_app.viewers[jdaviz_viewer_name]
+                if image_viewers:
+                    glue_viewer = image_viewers[0]
+                    jdaviz_viewer = current_jdaviz_app.viewers[
+                        glue_viewer._ref_or_id
+                    ]
+                else:
+                    raise ValueError(
+                        "No image viewers available in jdaviz app. "
+                        "Load image data or create a viewer first."
+                    )
+            else:
+                jdaviz_viewer = current_jdaviz_app.viewers[jdaviz_viewer_name]
 
-        return cls(jdaviz_viewer, mast_aladin)
+            return cls(jdaviz_viewer, mast_aladin)
