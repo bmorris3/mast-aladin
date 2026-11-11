@@ -3,7 +3,7 @@ from echo import delay_callback
 from traitlets import Unicode, Bool, Float, observe, HasTraits
 
 from mast_aladin import gca
-import jdaviz
+from mast_aladin.utils.optional_deps import import_jdaviz
 
 
 class ViewportOutline(HasTraits):
@@ -210,6 +210,7 @@ class ViewportOutline(HasTraits):
         jdaviz_viewer_name : str or None
             Name for one viewer in jdaviz. If None, uses the first available viewer.
         """
+        jdaviz = import_jdaviz()
 
         current_jdaviz_app = jdaviz.gca()
 
