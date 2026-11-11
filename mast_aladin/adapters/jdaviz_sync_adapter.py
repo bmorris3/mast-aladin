@@ -1,16 +1,16 @@
 from .viewer_sync_adapter import ViewerSyncAdapter
 import warnings
+from mast_aladin.utils.optional_deps import import_jdaviz
 
 
 class JdavizSyncAdapter(ViewerSyncAdapter):
     def __init__(self, viewer=None):
 
-        from mast_aladin.utils.optional_deps import import_jdaviz
         jdaviz = import_jdaviz()
 
         if viewer:
             self.app = viewer
-        else:
+        elif jdaviz is not None:
             self.app = jdaviz.gca()
 
         # Get the first available image viewer
