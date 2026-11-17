@@ -4,9 +4,6 @@ from ipyaladin import Aladin
 from sidecar import Sidecar as UpstreamSidecar
 from mast_table import MastTable
 from mast_aladin.app import MastAladin, gca
-from mast_aladin.utils.optional_deps import import_jdaviz
-
-jdaviz = import_jdaviz()
 
 default_height = 500
 default_anchor = 'split-bottom'
@@ -17,6 +14,9 @@ def is_jdaviz(app):
     If jdaviz can be imported, check app is instanace of ConfigHelper;
     otherwise you can't have a jdaviz app:
     """
+    from mast_aladin.utils.optional_deps import import_jdaviz
+    jdaviz = import_jdaviz()
+
     if jdaviz is not None:
         return isinstance(app, jdaviz.core.helpers.ConfigHelper)
 
@@ -141,6 +141,9 @@ class AppSidecarManager:
             apps.append(mal)
 
         jdaviz_instances = [app for app in apps if is_jdaviz(app)]
+
+        from mast_aladin.utils.optional_deps import import_jdaviz
+        jdaviz = import_jdaviz()
 
         if jdaviz is not None and not len(jdaviz_instances) and include_jdaviz:
             if not use_current_apps or jdaviz.gca() is None:
