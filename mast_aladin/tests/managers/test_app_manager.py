@@ -4,6 +4,9 @@ from IPython.core.interactiveshell import InteractiveShell
 import mast_aladin.managers.app_manager as app_manager_module
 from mast_aladin.managers.app_manager import AppManager
 
+from mast_aladin.utils.optional_deps import import_jdaviz
+NO_JDAVIZ = import_jdaviz() is None
+
 
 class TestAppManager:
     """Test suite for AppManager class."""
@@ -112,6 +115,7 @@ class TestAppManager:
         assert isinstance(apps_dict, dict)
         assert len(apps_dict) == 0
 
+    @pytest.mark.skipif(NO_JDAVIZ, reason='test requires jdaviz, jdaviz not installed')
     def test_auto_registers_supported_apps(
         self, app_manager, ipython_shell, supported_app_types
     ):

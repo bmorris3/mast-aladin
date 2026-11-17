@@ -3,6 +3,8 @@ from .plugin_manager import PluginManager
 from sidecar import Sidecar
 from IPython.display import display
 
+JdavizApp = None
+
 
 class MastManager():
     """
@@ -67,6 +69,11 @@ class MastManager():
         from mast_aladin.utils.optional_deps import import_jdaviz
         jdaviz = import_jdaviz()
 
+        if jdaviz and JdavizApp is None:
+            # this block only overwrites `JdavizApp` if jdaviz is installed,
+            # which is needed in the tests because the tests mock `JdavizApp`.
+            JdavizApp = jdaviz.configs.deconfigged.App
+
         for name, app in self._app_manager.apps.items():
             if prev_anchor is None:
                 prev_anchor = 'split-right'
@@ -79,7 +86,7 @@ class MastManager():
             with sc:
                 if (
                     jdaviz is not None and
-                    isinstance(app, jdaviz.configs.deconfigged.App)
+                    isinstance(app, JdavizApp)
                 ):
                     app.show()
                 else:
