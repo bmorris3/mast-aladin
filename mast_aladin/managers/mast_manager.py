@@ -69,6 +69,7 @@ class MastManager():
         from mast_aladin.utils.optional_deps import import_jdaviz
         jdaviz = import_jdaviz()
 
+        global JdavizApp
         if jdaviz and JdavizApp is None:
             # this block only overwrites `JdavizApp` if jdaviz is installed,
             # which is needed in the tests because the tests mock `JdavizApp`.
