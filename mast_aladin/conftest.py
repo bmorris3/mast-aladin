@@ -1,12 +1,12 @@
 import os
-import pytest
-from astropy.table import Table
-from mast_aladin import MastAladin
-import jdaviz
 import json
-import asdf
+import pytest
 import pyarrow as pa
 import pyarrow.parquet as pq
+import asdf
+from astropy.table import Table
+from mast_aladin import MastAladin
+from mast_aladin.utils.optional_deps import import_jdaviz
 
 
 @pytest.fixture
@@ -15,8 +15,10 @@ def MastAladin_app():
 
 
 @pytest.fixture
-def imviz_helper():
-    return jdaviz.gca()
+def jdaviz_helper():
+    jdaviz = import_jdaviz()
+    if jdaviz is not None:
+        return jdaviz.gca()
 
 
 @pytest.fixture

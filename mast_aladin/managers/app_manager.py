@@ -1,7 +1,8 @@
 from traitlets import HasTraits, Dict, Int
 from IPython import get_ipython
 from mast_aladin import MastAladin
-from jdaviz.configs.deconfigged import App as JdavizApp
+
+JdavizApp = None
 
 
 class AppManager(HasTraits):
@@ -70,12 +71,25 @@ class AppManager(HasTraits):
 
         globals_dict = self._ipython.user_ns
 
+        from mast_aladin.utils.optional_deps import import_jdaviz
+        jdaviz = import_jdaviz()
+
+        global JdavizApp
+        if jdaviz and JdavizApp is None:
+            # this block only overwrites `JdavizApp` if jdaviz is installed,
+            # which is needed in the tests because the tests mock `JdavizApp`.
+            JdavizApp = jdaviz.configs.deconfigged.App
+
         # update self._apps with any new instances found in the global namespace
         new_apps = {
             name: obj
             for name, obj in globals_dict.items()
             if not name.startswith("_")
-            and isinstance(obj, (MastAladin, JdavizApp))
+            and (
+                isinstance(obj, MastAladin) or
+                (jdaviz is not None and
+                 isinstance(obj, JdavizApp))
+            )
         }
 
         # Update the internal registry with the new set of apps.
