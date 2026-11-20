@@ -38,7 +38,7 @@ docs = [
     "sphinx_design"
 ]
 all = [
-    "jdaviz @ git+https://github.com/spacetelescope/jdaviz.git"
+    "jdaviz >= 5.1"
 ]
 
 [project.urls]

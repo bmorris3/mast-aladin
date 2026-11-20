@@ -1,7 +1,6 @@
 import pytest
 from astropy.coordinates import SkyCoord
-from mast_aladin.adapters import JdavizSyncAdapter
-from mast_aladin.plugins.viewer_sync import MastAladinSyncAdapter
+from mast_aladin.plugins.viewer_sync import MastAladinSyncAdapter, JdavizSyncAdapter
 from mast_aladin.app import MastAladin
 from mast_aladin.tests.test_utils import BaseImviz
 from mast_aladin.aida import AIDA_aspects
