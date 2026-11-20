@@ -14,7 +14,9 @@ from regions import (
 )
 
 from ipyaladin import Aladin
+from ipyaladin.overlays.overlay import Overlay
 
+from mast_table import MastTable
 from mast_table.base import mission_mast_ra_dec_colnames
 
 from IPython.display import display
@@ -126,6 +128,29 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
 
         self.sidecar = kwargs.get("sidecar", None)
         self.popout_button = PopoutButton(self, window_features="popup,width=800,height=600")
+        self._mast_table_listeners = {}
+        self._mast_table_names = {}
+
+    def _handle_custom_message(self, _: any, message: dict, buffers: any):
+        """Handle `catalog_loaded` messages and pass through others."""
+        event_type = message["event_type"]
+        if event_type == "catalog_loaded":
+            name = message["content"]["overlay_name"]
+            self._on_catalog_loaded(name)
+            return
+
+        super()._handle_custom_message(_, message, buffers)
+
+    def _on_catalog_loaded(self, name):
+        """Resync selection and filter masks after a catalog is loaded."""
+        mast_table_id = self._mast_table_names.get(name)
+        if mast_table_id is None:
+            return
+
+        mast_table, selection_handler, filter_handler = self._mast_table_listeners[mast_table_id]
+
+        selection_handler(mast_table.selected_mask)
+        filter_handler(mast_table.filter_mask)
 
     def add_table(
         self,
@@ -137,6 +162,7 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
         dec_field=None,
         n_sources_max=5_000,
         performance_cls=ConvexHullRegion,
+        selected_mask_listener=None,
         **table_options
     ):
         """
@@ -151,8 +177,12 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
 
         Parameters
         ----------
-        table : `~astropy.table.table.QTable` or `~astropy.table.table.Table` or `str`
-            The table to add. Valid types are astropy table and S3 URIs of parquet files.
+        table : `~astropy.table.table.QTable` | `~astropy.table.table.Table` | `str` |
+             `~mast_table.mast_table.MastTable`.
+            The table to add. Valid types are ``MastTable``, astropy table, or S3 URIs of
+            parquet files.  When a ``MastTable`` is provided, listeners will automatically
+            be configured to synchronize selections and filters between ``MastTable``
+            and the viewport.
 
         include_column_names : list[str], optional
             List of column names from the remote parquet table to stream into mast-aladin.
@@ -252,6 +282,23 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
                     f"table='{table}' is not a valid S3 URI for a parquet table."
                 )
 
+        # determine if table is mast-table, get its data table and its id
+        mast_table_id = None
+        mast_table = table if isinstance(table, MastTable) else None
+        if mast_table:
+            table = mast_table.table
+            mast_table_id = id(mast_table)
+
+        # when add_table is called via .update(), retrieve the mast-table
+        # associated with the overlay and remove old listeners
+        if "mast_table_id" in table_options:
+            mast_table_id = table_options["mast_table_id"]
+            mast_table, old_selection_handler, old_filter_handler = self._mast_table_listeners[
+                mast_table_id
+            ]
+            mast_table.remove_selection_listener(old_selection_handler)
+            mast_table.remove_filter_listener(old_filter_handler)
+
         if ra_field is not None and dec_field is not None:
             check_table_for_columns(table, ra_field, dec_field)
         else:
@@ -290,6 +337,19 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
             if not name:
                 name = "catalog"
 
+            if mast_table is not None:
+                def aladin_selection_handler(mask):
+                    mast_table.set_selected_mask(mask, notify=False)
+
+                selected_mask_listener = aladin_selection_handler
+
+                self._selected_mask_listeners[name] = selected_mask_listener
+
+            # add the mast_table_id to table options so the mast-table associated
+            # with the overlay can be retrieved in .update() calls
+            if mast_table_id is not None:
+                table_options["mast_table_id"] = mast_table_id
+
             with warnings.catch_warnings():
                 # Ignore votable unit warning raised by ipyaladin.Aladin.add_table
                 # for units that cannot be represented with vounits. The warning is
@@ -297,14 +357,36 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
                 # votable bytes buffer:
                 warnings.simplefilter('ignore', votable.exceptions.W50)
 
-                return super().add_table(
+                table_layer = super().add_table(
                     table,
                     shape=shape,
                     name=name,
                     ra_field=ra_field,
                     dec_field=dec_field,
+                    selected_mask_listener=selected_mask_listener,
                     **table_options
                 )
+
+            if mast_table is not None:
+                def selection_handler(mask):
+                    self.select_by_mask(table_layer, mask.tolist())
+
+                def filter_handler(mask):
+                    self.filter_by_mask(table_layer, mask.tolist())
+
+                mast_table.add_selection_listener(selection_handler)
+                mast_table.add_filter_listener(filter_handler)
+
+                # store the mast-table, listeners, and ids for reference
+                # when removing and updating overlays
+                self._mast_table_listeners[mast_table_id] = (
+                    mast_table,
+                    selection_handler,
+                    filter_handler,
+                )
+                self._mast_table_names[table_layer.name] = mast_table_id
+
+            return table_layer
 
         # construct a performance catalog
         else:
@@ -327,6 +409,65 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
             catalog_layer._attach_to_mast_aladin(self)
             self.performance_catalogs.append(catalog_layer)
             return catalog_layer.overlay_info
+
+    def _remove_mast_table_listeners(self, mast_table_id):
+        """Remove listeners upon overlay removal."""
+        listeners = self._mast_table_listeners.pop(mast_table_id, None)
+
+        if listeners is None:
+            return
+
+        mast_table, selection_handler, filter_handler = listeners
+
+        mast_table.remove_selection_listener(selection_handler)
+        mast_table.remove_filter_listener(filter_handler)
+
+    def remove_overlay(self, overlay, update_flag=False):
+        """
+        Remove an overlay layer.
+
+        Parameters
+        ----------
+        overlay : str(s) or Overlay(s)
+            The overlay name (str) or Overlay object to be removed.
+
+        Raises
+        ------
+        TypeError
+            Overlays are not provided as Overlay or names.
+        ValueError
+            Overlay does not exist.
+        """
+        if isinstance(overlay, Overlay):
+            overlay_objs = [overlay]
+        elif isinstance(overlay, str):
+            overlay_objs = [self._overlay_manager[overlay]]
+        elif isinstance(overlay, (list, tuple)):
+            overlay_objs = [
+                o if isinstance(o, Overlay)
+                else self._overlay_manager[o] for o in overlay
+            ]
+        else:
+            raise TypeError("overlay must be a str, Overlay, or iterable of these.")
+
+        for obj in overlay_objs:
+            mast_table_id = obj.options.get("mast_table_id", None)
+            if mast_table_id is None:
+                mast_table_id = self._mast_table_names.get(
+                    obj.name
+                )
+
+            if not update_flag:
+                self._remove_mast_table_listeners(mast_table_id)
+
+            existing_overlay_name = next(
+                (k for k, v in self._mast_table_names.items() if v == mast_table_id),
+                obj.name
+            )
+
+            self._mast_table_names.pop(existing_overlay_name, None)
+
+        super().remove_overlay(overlay_objs)
 
     @observe('_target', '_rotation', '_fov_xy')
     @throttle(1)
@@ -576,14 +717,15 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
         )
 
     def search_this_area(
-            self,
-            mission=None,
-            mission_search=None,
-            add_footprints=True,
-            name="MAST Search",
-            replace=False,
-            color=mast_footprint_color,
-            **query_region_kwargs):
+        self,
+        mission=None,
+        mission_search=None,
+        add_footprints=True,
+        name="MAST Search",
+        replace=False,
+        color=mast_footprint_color,
+        **query_region_kwargs
+    ):
         """
         Query MAST `Mission Search <https://mast.stsci.edu/search/ui/#/>`_ for observations
         from ``mission`` within the current viewport, and optionally add the
