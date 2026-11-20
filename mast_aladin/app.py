@@ -299,23 +299,39 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
             mast_table.remove_selection_listener(old_selection_handler)
             mast_table.remove_filter_listener(old_filter_handler)
 
-        if ra_field is not None and dec_field is not None:
-            check_table_for_columns(table, ra_field, dec_field)
-        else:
+        # if ra/dec field aren't set in `add_table` but they are set in a
+        # PerformanceCatalog given to `add_table`
+        if (
+            # ra/dec fields not set by the user:
+            None in [ra_field, dec_field] and
+
+            # table is a performance catalog:
+            isinstance(table, PerformanceCatalog) and
+
+            # ra/dec fields are set on the performance catalog:
+            None not in [table.ra_field, table.dec_field]
+        ):
+            ra_field = table.ra_field
+            dec_field = table.dec_field
+
+        # if ra/dec fields aren't available:
+        if None in [ra_field, dec_field]:
             # search for ra/dec columns
             ra_guess, dec_guess = guess_coord_cols(table)
-            ra_field = ra_field or ra_guess
-            dec_field = dec_field or dec_guess
 
-        if isinstance(ra_field, SkyCoord):
-            ra_field = ra_field.ra
-            dec_field = ra_field.dec
+            if '---' in [ra_field, dec_field]:
+                raise ValueError(
+                    "Could not automatically determine RA/Dec columns in table. "
+                    "Please specify `ra_field` and `dec_field` explicitly."
+                )
+            else:
+                ra_field = ra_guess
+                dec_field = dec_guess
 
-        if '---' in [ra_field, dec_field]:
-            raise ValueError(
-                "Could not automatically determine RA/Dec columns in table. "
-                "Please specify `ra_field` and `dec_field` explicitly."
-            )
+        if isinstance(table, (MastTable, PerformanceCatalog)):
+            check_table_for_columns(table.table, ra_field, dec_field)
+        else:
+            check_table_for_columns(table, ra_field, dec_field)
 
         # add an already-constructed performance catalog
         if isinstance(table, PerformanceCatalog):
