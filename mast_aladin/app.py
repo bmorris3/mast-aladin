@@ -285,9 +285,14 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
         # determine if table is mast-table, get its data table and its id
         mast_table_id = None
         mast_table = table if isinstance(table, MastTable) else None
+        performance_catalog = table if isinstance(table, PerformanceCatalog) else None
+
         if mast_table:
             table = mast_table.table
             mast_table_id = id(mast_table)
+
+        if performance_catalog:
+            table = performance_catalog.table
 
         # when add_table is called via .update(), retrieve the mast-table
         # associated with the overlay and remove old listeners
@@ -328,10 +333,7 @@ class MastAladin(Aladin, DelayUntilRendered, AIDA):
                 ra_field = ra_guess
                 dec_field = dec_guess
 
-        if isinstance(table, (MastTable, PerformanceCatalog)):
-            check_table_for_columns(table.table, ra_field, dec_field)
-        else:
-            check_table_for_columns(table, ra_field, dec_field)
+        check_table_for_columns(table, ra_field, dec_field)
 
         # add an already-constructed performance catalog
         if isinstance(table, PerformanceCatalog):
